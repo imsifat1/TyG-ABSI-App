@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/tyg_absi_notifier.dart';
 import '../../domain/controllers.dart';
 
-enum FieldKind { weight, height, waist }
+enum FieldKind { weight, height, waist, custom }
 
 class NumberField extends ConsumerWidget {
   final String label;
@@ -13,6 +13,8 @@ class NumberField extends ConsumerWidget {
   final IconData? prefixIcon;
   final String? hint;
   final String? helper;
+  final TextEditingController? controllerOverride;
+  final void Function(String value)? onChangedOverride;
 
   const NumberField({
     super.key,
@@ -22,22 +24,30 @@ class NumberField extends ConsumerWidget {
     this.prefixIcon,
     this.hint,
     this.helper,
+    this.controllerOverride,
+    this.onChangedOverride,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ctrl = switch (kind) {
+    final ctrl = controllerOverride ?? switch (kind) {
       FieldKind.weight => ref.watch(weightControllerProvider),
       FieldKind.height => ref.watch(heightControllerProvider),
       FieldKind.waist  => ref.watch(waistControllerProvider),
+      FieldKind.custom => TextEditingController(),
     };
 
     void onChanged(String v) {
+      if (onChangedOverride != null) {
+        onChangedOverride!(v);
+        return;
+      }
       final n = ref.read(measurementsProvider.notifier);
       switch (kind) {
         case FieldKind.weight: n.setWeight(v); break;
         case FieldKind.height: n.setHeight(v); break;
         case FieldKind.waist:  n.setWaist(v);  break;
+        case FieldKind.custom: break;
       }
     }
 

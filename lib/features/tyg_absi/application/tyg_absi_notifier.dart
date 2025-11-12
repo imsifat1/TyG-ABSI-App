@@ -21,6 +21,9 @@ class TygAbsiNotifier extends rp.StateNotifier<Measurements> {
   void setWeight(String v) => state = state.copyWith(weightKg: parseDouble(v));
   void setHeight(String v) => state = state.copyWith(heightCm: parseDouble(v));
   void setWaist(String v) => state = state.copyWith(waistCm: parseDouble(v));
+
+  void setAge(String v) => state = state.copyWith(ageYears: parseInt(v));        // NEW
+  void setSex(Sex s) => state = state.copyWith(sex: s);
   void reset() => state = const Measurements();
 }
 

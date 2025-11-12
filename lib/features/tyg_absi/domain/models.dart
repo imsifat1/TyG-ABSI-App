@@ -1,5 +1,6 @@
 enum TGUnit { mgdl, mmoll }
 enum GlucoseUnit { mgdl, mmoll }
+enum Sex { male, female, other }
 
 extension TGUnitLabel on TGUnit {
   String get label => this == TGUnit.mgdl ? 'mg/dL' : 'mmol/L';
@@ -16,6 +17,8 @@ class Measurements {
   final double? weightKg;
   final double? heightCm;
   final double? waistCm;
+  final int? ageYears;
+  final Sex sex;
 
   const Measurements({
     this.triglycerides,
@@ -25,6 +28,8 @@ class Measurements {
     this.weightKg,
     this.heightCm,
     this.waistCm,
+    this.ageYears,
+    this.sex = Sex.male,
   });
 
   Measurements copyWith({
@@ -35,6 +40,8 @@ class Measurements {
     double? weightKg,
     double? heightCm,
     double? waistCm,
+    int? ageYears,
+    Sex? sex,
   }) {
     return Measurements(
       triglycerides: triglycerides ?? this.triglycerides,
@@ -44,6 +51,8 @@ class Measurements {
       weightKg: weightKg ?? this.weightKg,
       heightCm: heightCm ?? this.heightCm,
       waistCm: waistCm ?? this.waistCm,
+      ageYears: ageYears ?? this.ageYears,
+      sex: sex ?? this.sex,
     );
   }
 }

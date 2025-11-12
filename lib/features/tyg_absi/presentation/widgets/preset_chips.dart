@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/tyg_absi_notifier.dart';
 import '../../domain/controllers.dart';
+import '../../domain/models.dart';
 
 class PresetChips extends ConsumerWidget {
   const PresetChips({super.key});
@@ -19,6 +20,9 @@ class PresetChips extends ConsumerWidget {
     final waistC   = ref.read(waistControllerProvider);
 
     void applyNormal() {
+      final ageC = ref.read(ageControllerProvider);
+      ageC.text = '40'; ref.read(measurementsProvider.notifier).setAge('40');
+      ref.read(measurementsProvider.notifier).setSex(Sex.male);
       tgC.text = '120'; n.setTriglycerides('120');
       gluC.text = '90'; n.setGlucose('90');
       wtC.text = '70'; n.setWeight('70');
@@ -27,6 +31,9 @@ class PresetChips extends ConsumerWidget {
     }
 
     void applyElevated() {
+      final ageC = ref.read(ageControllerProvider);
+      ageC.text = '40'; ref.read(measurementsProvider.notifier).setAge('40');
+      ref.read(measurementsProvider.notifier).setSex(Sex.male);
       tgC.text = '220'; n.setTriglycerides('220');
       gluC.text = '130'; n.setGlucose('130');
       wtC.text = '92'; n.setWeight('92');

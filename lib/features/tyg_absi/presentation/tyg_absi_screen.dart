@@ -6,6 +6,7 @@ import '../domain/controllers.dart';
 import 'widgets/animated_header_backdrop.dart';
 import 'widgets/blood_input_row.dart';
 import 'widgets/body_inputs.dart';
+import 'widgets/demographics_inputs.dart';
 import 'widgets/header_score_card.dart';
 import 'widgets/note.dart';
 import 'widgets/preset_chips.dart';
@@ -81,6 +82,13 @@ class TygAbsiScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(12, 12, 16, 12),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
+                  SectionCard(
+                    title: 'Demographics',
+                    subtitle: 'Optional fields to describe the user.',
+                    child: DemographicsInputs(resetToken: resetToken),
+                  ),
+
+                  const SizedBox(height: 14),
 
                   SectionCard(
                     title: 'Blood Tests',
@@ -115,6 +123,7 @@ class TygAbsiScreen extends ConsumerWidget {
   void _reset(WidgetRef ref) {
     ref.read(measurementsProvider.notifier).reset();
 
+    ref.read(ageControllerProvider).clear();
     ref.read(tgControllerProvider).clear();
     ref.read(glucoseControllerProvider).clear();
     ref.read(weightControllerProvider).clear();

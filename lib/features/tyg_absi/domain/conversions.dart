@@ -6,6 +6,8 @@ double? parseDouble(String s) {
   return double.tryParse(t);
 }
 
+int? parseInt(String s) { final t = s.trim(); if (t.isEmpty) return null; return int.tryParse(t); }
+
 double cmToM(double cm) => cm / 100.0;
 
 // Triglycerides mmol/L -> mg/dL
