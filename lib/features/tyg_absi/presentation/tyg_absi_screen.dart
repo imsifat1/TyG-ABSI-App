@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../application/tyg_absi_notifier.dart';
+import '../domain/controllers.dart';
 import '../domain/models.dart';
 import 'widgets/animated_header_backdrop.dart';
 import 'widgets/input_field.dart';
@@ -47,6 +48,13 @@ class TygAbsiScreen extends ConsumerWidget {
                   tooltip: 'Reset',
                   onPressed: () {
                     ref.read(measurementsProvider.notifier).reset();
+
+                    ref.read(tgControllerProvider).clear();
+                    ref.read(glucoseControllerProvider).clear();
+                    ref.read(weightControllerProvider).clear();
+                    ref.read(heightControllerProvider).clear();
+                    ref.read(waistControllerProvider).clear();
+
                     ref.read(resetTriggerProvider.notifier).state++; // force rebuild of TextFields
                   },
                   icon: const Icon(Icons.refresh_rounded),
@@ -56,9 +64,9 @@ class TygAbsiScreen extends ConsumerWidget {
                 background: AnimatedHeaderBackdrop(),
               ),
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(110),
+                preferredSize: const Size.fromHeight(130),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 16, 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -72,7 +80,7 @@ class TygAbsiScreen extends ConsumerWidget {
             ),
 
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: const EdgeInsets.fromLTRB(12, 12, 16, 12),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _SectionCard(
@@ -247,11 +255,13 @@ class TGInput extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final m = ref.watch(measurementsProvider);
     final notifier = ref.read(measurementsProvider.notifier);
+    final ctrl = ref.watch(tgControllerProvider);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('Fasting Triglycerides', style: Theme.of(context).textTheme.labelLarge),
       const SizedBox(height: 8),
       NumberTextField(
+        controller: ctrl,
         key: ValueKey('tg-$resetToken'),
         hint: 'e.g., 150 or 1.7',
         prefixIcon: Icons.opacity_rounded,
@@ -279,11 +289,13 @@ class GlucoseInput extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final m = ref.watch(measurementsProvider);
     final notifier = ref.read(measurementsProvider.notifier);
+    final ctrl = ref.watch(glucoseControllerProvider);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('Fasting Glucose', style: Theme.of(context).textTheme.labelLarge),
       const SizedBox(height: 8),
       NumberTextField(
+        controller: ctrl,
         hint: 'e.g., 90 or 5.0',
         key: ValueKey('fg-$resetToken'),
         prefixIcon: Icons.bloodtype_rounded,

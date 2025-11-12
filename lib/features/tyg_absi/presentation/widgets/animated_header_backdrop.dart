@@ -2,9 +2,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/tyg_absi_notifier.dart';
+import '../../domain/controllers.dart';
 
 // Animated gradient + soft blobs
 class AnimatedHeaderBackdrop extends StatefulWidget {
+  const AnimatedHeaderBackdrop({super.key});
+
   @override
   State<AnimatedHeaderBackdrop> createState() => _AnimatedHeaderBackdropState();
 }
@@ -90,6 +93,8 @@ class _Blob extends StatelessWidget {
 
 // Glassy score card docked at the bottom of the app bar
 class HeaderScoreCard extends ConsumerWidget {
+  const HeaderScoreCard({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(resultProvider);
@@ -98,7 +103,7 @@ class HeaderScoreCard extends ConsumerWidget {
     // Show only the “big number” when ready; otherwise a hint
     final String title = (result.error == null && result.tygAbsi != null)
         ? 'TyG-ABSI'
-        : 'Ready to calculate';
+        : 'Ready to calculate TyG-ABSI';
     final String value = (result.error == null && result.tygAbsi != null)
         ? (result.tygAbsi!).toStringAsFixed(2)
         : 'Enter all inputs';
@@ -166,24 +171,32 @@ class HeaderScoreCard extends ConsumerWidget {
 
 // Preset chips for quick demo / testing
 class PresetChips extends ConsumerWidget {
+  const PresetChips({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final n = ref.read(measurementsProvider.notifier);
 
+    final tgC      = ref.read(tgControllerProvider);
+    final gluC     = ref.read(glucoseControllerProvider);
+    final wtC      = ref.read(weightControllerProvider);
+    final htC      = ref.read(heightControllerProvider);
+    final waistC   = ref.read(waistControllerProvider);
+
     void applyNormal() {
-      n.setTriglycerides('120'); // mg/dL default
-      n.setGlucose('90');        // mg/dL default
-      n.setWeight('70');
-      n.setHeight('170');
-      n.setWaist('84');
+      tgC.text = '120'; n.setTriglycerides('120');
+      gluC.text = '90'; n.setGlucose('90');
+      wtC.text = '70'; n.setWeight('70');
+      htC.text = '170'; n.setHeight('170');
+      waistC.text = '84'; n.setWaist('84');
     }
 
     void applyElevated() {
-      n.setTriglycerides('220'); // mg/dL
-      n.setGlucose('130');       // mg/dL
-      n.setWeight('92');
-      n.setHeight('168');
-      n.setWaist('102');
+      tgC.text = '220'; n.setTriglycerides('220');
+      gluC.text = '130'; n.setGlucose('130');
+      wtC.text = '92'; n.setWeight('92');
+      htC.text = '168'; n.setHeight('168');
+      waistC.text = '102'; n.setWaist('102');
     }
 
     return Wrap(

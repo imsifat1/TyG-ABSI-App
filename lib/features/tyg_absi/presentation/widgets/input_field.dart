@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/tyg_absi_notifier.dart';
+import '../../domain/controllers.dart';
 
 enum FieldKind { weight, height, waist }
 
@@ -25,18 +26,18 @@ class NumberField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ctrl = switch (kind) {
+      FieldKind.weight => ref.watch(weightControllerProvider),
+      FieldKind.height => ref.watch(heightControllerProvider),
+      FieldKind.waist  => ref.watch(waistControllerProvider),
+    };
+
     void onChanged(String v) {
       final n = ref.read(measurementsProvider.notifier);
       switch (kind) {
-        case FieldKind.weight:
-          n.setWeight(v);
-          break;
-        case FieldKind.height:
-          n.setHeight(v);
-          break;
-        case FieldKind.waist:
-          n.setWaist(v);
-          break;
+        case FieldKind.weight: n.setWeight(v); break;
+        case FieldKind.height: n.setHeight(v); break;
+        case FieldKind.waist:  n.setWaist(v);  break;
       }
     }
 
@@ -46,6 +47,7 @@ class NumberField extends ConsumerWidget {
         Text(label, style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
         NumberTextField(
+          controller: ctrl,
           hint: hint ?? 'e.g., 70.5',
           prefixIcon: prefixIcon,
           suffixText: suffix,
@@ -65,6 +67,7 @@ class NumberTextField extends StatelessWidget {
   final Widget? trailing;
   final String? helper;
   final ValueChanged<String> onChanged;
+  final TextEditingController? controller;
 
   const NumberTextField({
     super.key,
@@ -74,11 +77,13 @@ class NumberTextField extends StatelessWidget {
     this.trailing,
     this.helper,
     required this.onChanged,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     final field = TextField(
+      controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
       onChanged: onChanged,
