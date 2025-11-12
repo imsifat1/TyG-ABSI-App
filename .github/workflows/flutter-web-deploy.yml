@@ -1,0 +1,34 @@
+name: Deploy Flutter Web to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]   # or your default branch
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      # If your site will be hosted at https://<user>.github.io/<repo>/
+      # set the correct base path so assets load:
+      - name: Build web (HTML renderer)
+        run: flutter build web --release --web-renderer html --base-href /${{ github.event.repository.name }}/
+
+      # For SPA routing on GitHub Pages, add a 404.html that mirrors index.html
+      - name: Add 404 fallback
+        run: cp build/web/index.html build/web/404.html
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
+          publish_branch: gh-pages
