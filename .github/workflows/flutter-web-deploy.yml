@@ -1,3 +1,4 @@
+# .github/workflows/flutter-web-deploy.yml
 name: Deploy Flutter Web to GitHub Pages
 
 on:
@@ -13,22 +14,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Pin a recent Flutter that supports web + --web-renderer
+      # Install a recent Flutter that includes Dart >= 3.9
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'   # any recent stable is fine
+          flutter-version: '3.27.0'   # or newer stable that your project supports
           channel: 'stable'
 
-      - name: Show Flutter version
-        run: flutter --version
+      - name: Show versions
+        run: |
+          flutter --version
+          dart --version
 
-      - name: Enable web (no-op on modern SDKs, safe to run)
+      - name: Enable web
         run: flutter config --enable-web
 
       - name: Pub get
         run: flutter pub get
 
-      - name: Build web (HTML renderer)
+      - name: Build web
         run: flutter build web --release --web-renderer html --base-href /tygabsi/
 
       - name: SPA 404 fallback
