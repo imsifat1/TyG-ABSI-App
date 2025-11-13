@@ -35,7 +35,9 @@ jobs:
         run: flutter pub get
 
       - name: Build web
-        run: flutter build web --release --web-renderer html --base-href /${{ github.event.repository.name }}/
+        # Remove `--web-renderer` option because some Flutter CLI versions do not accept it.
+        # Let Flutter choose the default renderer for the current SDK.
+        run: flutter build web --release --base-href /${{ github.event.repository.name }}/
 
       - name: SPA 404 fallback
         run: cp build/web/index.html build/web/404.html
